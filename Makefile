@@ -335,12 +335,7 @@ all::
 # (defaults to "man") if you want to have a different default when
 # "git help" is called without a parameter specifying the format.
 #
-# Define TEST_GIT_INDEX_VERSION to 2, 3 or 4 to run the test suite
-# with a different indexfile format version.  If it isn't set the index
-# file format used is index-v[23].
-#
-# Define GMTIME_UNRELIABLE_ERRORS if your gmtime() function does not
-# return NULL when it receives a bogus time_t.
+NO_REGEX=1
 
 GIT-VERSION-FILE: FORCE
 	@$(SHELL_PATH) ./GIT-VERSION-GEN
