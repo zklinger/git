@@ -135,6 +135,7 @@ void wt_status_prepare(struct wt_status *s)
 	s->change.strdup_strings = 1;
 	s->untracked.strdup_strings = 1;
 	s->ignored.strdup_strings = 1;
+	s->assumed_unchanged.strdup_strings = 1;
 	s->show_branch = -1;  /* unspecified */
 	s->display_comment_prefix = 0;
 }
@@ -228,13 +229,14 @@ static void wt_status_print_dirty_header(struct wt_status *s,
 
 static void wt_status_print_other_header(struct wt_status *s,
 					 const char *what,
-					 const char *how)
+					 const char *how,
+					 const char *why)
 {
 	const char *c = color(WT_STATUS_HEADER, s);
 	status_printf_ln(s, c, "%s:", what);
 	if (!s->hints)
 		return;
-	status_printf_ln(s, c, _("  (use \"git %s <file>...\" to include in what will be committed)"), how);
+	status_printf_ln(s, c, _("  (use \"git %s <file>...\" %s)"), how, why);
 	status_printf_ln(s, c, "");
 }
 
@@ -560,6 +562,24 @@ static void wt_status_collect_changes_initial(struct wt_status *s)
 	}
 }
 
+static void wt_status_collect_assumed_unchanged(struct wt_status *s)
+{
+	struct pathspec pathspec;
+	int i;
+
+	init_pathspec(&pathspec, s->pathspec);
+	for (i = 0; i < active_nr; i++) {
+		struct cache_entry *ce = active_cache[i];
+
+		if (!ce_path_match(ce, &pathspec))
+			continue;
+		if (ce->ce_flags & CE_VALID)
+			string_list_insert(&s->assumed_unchanged, ce->name);
+
+	}
+	free_pathspec(&pathspec);
+}
+
 static void wt_status_collect_untracked(struct wt_status *s)
 {
 	int i;
@@ -620,6 +640,8 @@ void wt_status_collect(struct wt_status *s)
 	else
 		wt_status_collect_changes_index(s);
 	wt_status_collect_untracked(s);
+	if (s->show_assumed_unchanged_files)
+		wt_status_collect_assumed_unchanged(s);
 }
 
 static void wt_status_print_unmerged(struct wt_status *s)
@@ -783,7 +805,8 @@ static void wt_status_print_submodule_summary(struct wt_status *s, int uncommitt
 static void wt_status_print_other(struct wt_status *s,
 				  struct string_list *l,
 				  const char *what,
-				  const char *how)
+				  const char *how,
+				  const char *why)
 {
 	int i;
 	struct strbuf buf = STRBUF_INIT;
@@ -793,7 +816,7 @@ static void wt_status_print_other(struct wt_status *s,
 	if (!l->nr)
 		return;
 
-	wt_status_print_other_header(s, what, how);
+	wt_status_print_other_header(s, what, how, why);
 
 	for (i = 0; i < l->nr; i++) {
 		struct string_list_item *it;
@@ -1301,6 +1324,7 @@ void wt_status_print(struct wt_status *s)
 	const char *branch_color = color(WT_STATUS_ONBRANCH, s);
 	const char *branch_status_color = color(WT_STATUS_HEADER, s);
 	struct wt_status_state state;
+	const char *why = _("to include in what will be committed");
 
 	memset(&state, 0, sizeof(state));
 	wt_status_get_state(&state,
@@ -1357,9 +1381,9 @@ void wt_status_print(struct wt_status *s)
 		wt_status_print_submodule_summary(s, 1);  /* unstaged */
 	}
 	if (s->show_untracked_files) {
-		wt_status_print_other(s, &s->untracked, _("Untracked files"), "add");
+		wt_status_print_other(s, &s->untracked, _("Untracked files"), "add", why);
 		if (s->show_ignored_files)
-			wt_status_print_other(s, &s->ignored, _("Ignored files"), "add -f");
+			wt_status_print_other(s, &s->ignored, _("Ignored files"), "add -f", why);
 		if (advice_status_u_option && 2000 < s->untracked_in_ms) {
 			status_printf_ln(s, GIT_COLOR_NORMAL, "");
 			status_printf_ln(s, GIT_COLOR_NORMAL,
@@ -1372,6 +1396,10 @@ void wt_status_print(struct wt_status *s)
 		status_printf_ln(s, GIT_COLOR_NORMAL, _("Untracked files not listed%s"),
 			s->hints
 			? _(" (use -u option to show untracked files)") : "");
+
+	 if (s->show_assumed_unchanged_files)
+		wt_status_print_other(s, &s->assumed_unchanged, _("Assumed unchanged files"),
+				"update-index -no-assume-unchanged", _("to unset"));
 
 	if (s->verbose)
 		wt_status_print_verbose(s);
@@ -1598,6 +1626,12 @@ void wt_shortstatus_print(struct wt_status *s)
 
 		it = &(s->ignored.items[i]);
 		wt_shortstatus_other(it, s, "!!");
+	}
+	for (i = 0; i < s->assumed_unchanged.nr; i++) {
+		struct string_list_item *it;
+
+		it = &(s->assumed_unchanged.items[i]);
+		wt_shortstatus_other(it, s, "^^");
 	}
 }
 

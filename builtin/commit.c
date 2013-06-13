@@ -122,6 +122,7 @@ static enum commit_whence whence;
 static int sequencer_in_use;
 static int use_editor = 1, include_status = 1;
 static int show_ignored_in_status, have_option_m;
+static int show_assumed_unchanged_in_status;
 static const char *only_include_assumed;
 static struct strbuf message = STRBUF_INIT;
 
@@ -1270,8 +1271,10 @@ int cmd_status(int argc, const char **argv, const char *prefix)
 		  N_("mode"),
 		  N_("show untracked files, optional modes: all, normal, no. (Default: all)"),
 		  PARSE_OPT_OPTARG, NULL, (intptr_t)"all" },
-		OPT_BOOL(0, "ignored", &show_ignored_in_status,
-			 N_("show ignored files")),
+		OPT_BOOLEAN(0, "ignored", &show_ignored_in_status,
+			    N_("show ignored files")),
+		OPT_BOOLEAN(0, "assumed-unchanged", &show_assumed_unchanged_in_status,
+			    N_("show files marked as assume-unchanged")),
 		{ OPTION_STRING, 0, "ignore-submodules", &ignore_submodule_arg, N_("when"),
 		  N_("ignore changes to submodules, optional when: all, dirty, untracked. (Default: all)"),
 		  PARSE_OPT_OPTARG, NULL, (intptr_t)"all" },
@@ -1292,9 +1295,16 @@ int cmd_status(int argc, const char **argv, const char *prefix)
 	handle_untracked_files_arg(&s);
 	if (show_ignored_in_status)
 		s.show_ignored_files = 1;
+<<<<<<< HEAD
 	parse_pathspec(&s.pathspec, 0,
 		       PATHSPEC_PREFER_FULL,
 		       prefix, argv);
+=======
+	if (show_assumed_unchanged_in_status)
+		s.show_assumed_unchanged_files = 1;
+	if (*argv)
+		s.pathspec = get_pathspec(prefix, argv);
+>>>>>>> status: Add --assumed-unchanged option
 
 	read_cache_preload(&s.pathspec);
 	refresh_index(&the_index, REFRESH_QUIET|REFRESH_UNMERGED, &s.pathspec, NULL, NULL);

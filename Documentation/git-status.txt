@@ -82,6 +82,10 @@ configuration variable documented in linkgit:git-config[1].
 --ignored::
 	Show ignored files as well.
 
+--assumed-unchanged::
+	Show files that are not checked for changes in the working tree because
+	their "assume unchanged" bit is set (see linkgit:git-update-index[1]).
+
 -z::
 	Terminate entries with NUL, instead of LF.  This implies
 	the `--porcelain` output format if no other format is given.
@@ -164,6 +168,7 @@ in which case `XY` are `!!`.
     -------------------------------------------------
     ?           ?    untracked
     !           !    ignored
+    ^           ^    assumed unchanged
     -------------------------------------------------
 
 If -b is used the short-format status is preceded by a line

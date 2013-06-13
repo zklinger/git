@@ -279,8 +279,8 @@ tree files, you have to explicitly tell Git about it by dropping
 
 In order to set "assume unchanged" bit, use `--assume-unchanged`
 option.  To unset, use `--no-assume-unchanged`. To see which files
-have the "assume unchanged" bit set, use `git ls-files -v`
-(see linkgit:git-ls-files[1]).
+have the "assume unchanged" bit set, use
+`git status --assumed-unchanged` (see linkgit:git-status[1]).
 
 The command looks at `core.ignorestat` configuration variable.  When
 this is true, paths updated with `git update-index paths...` and

@@ -55,6 +55,7 @@ struct wt_status {
 	int relative_paths;
 	int submodule_summary;
 	int show_ignored_files;
+	int show_assumed_unchanged_files;
 	enum untracked_status_type show_untracked_files;
 	const char *ignore_submodule_arg;
 	char color_palette[WT_STATUS_MAXSLOT][COLOR_MAXLEN];
@@ -72,6 +73,7 @@ struct wt_status {
 	struct string_list change;
 	struct string_list untracked;
 	struct string_list ignored;
+	struct string_list assumed_unchanged;
 	uint32_t untracked_in_ms;
 };
 
