@@ -1376,6 +1376,8 @@ static struct diffstat_file *diffstat_add(struct diffstat_t *diffstat,
 	return x;
 }
 
+static void diff_flush_stat(struct diff_filepair *p, struct diff_options *o, struct diffstat_t *diffstat);
+
 static void diffstat_consume(void *priv, char *line, unsigned long len)
 {
 	struct diffstat_t *diffstat = priv;
@@ -2924,6 +2926,18 @@ static void run_external_diff(const char *pgm,
 		argv_array_push(&argv, name);
 	}
 	fflush(NULL);
+
+	if (DIFF_OPT_TST(o, DIFF_FROM_CONTENTS)) {
+		struct diff_filepair *p = q->queue[o->diff_path_counter];
+		struct diffstat_t diffstat;
+		memset(&diffstat, 0, sizeof(struct diffstat_t));
+		diff_flush_stat(p, o, &diffstat);
+		if (diffstat.files[0]->added == 0 && diffstat.files[0]->deleted == 0) {
+			o->diff_path_counter++;
+			remove_tempfile();
+			return;
+		}
+	}
 
 	env[0] = env_counter;
 	snprintf(env_counter, sizeof(env_counter), "GIT_DIFF_PATH_COUNTER=%d",
