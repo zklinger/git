@@ -243,7 +243,18 @@ static void wt_status_print_trailer(struct wt_status *s)
 	status_printf_ln(s, color(WT_STATUS_HEADER, s), "");
 }
 
-#define quote_path quote_path_relative
+static char *quote_path(const char *in, const char *prefix,
+			  struct strbuf *out)
+{
+	char *one;
+	one = quote_path_relative(in, prefix, out);
+	if (*one != '"' && strchr(one, ' ') != NULL) {
+		strbuf_insert(out, 0, "\"", 1);
+		strbuf_addch(out, '"');
+		one = out->buf;
+	}
+	return one;
+}
 
 static const char *wt_status_unmerged_status_string(int stagemask)
 {
@@ -1458,20 +1469,10 @@ static void wt_shortstatus_status(struct string_list_item *it,
 		const char *one;
 		if (d->head_path) {
 			one = quote_path(d->head_path, s->prefix, &onebuf);
-			if (*one != '"' && strchr(one, ' ') != NULL) {
-				putchar('"');
-				strbuf_addch(&onebuf, '"');
-				one = onebuf.buf;
-			}
 			printf("%s -> ", one);
 			strbuf_release(&onebuf);
 		}
 		one = quote_path(it->string, s->prefix, &onebuf);
-		if (*one != '"' && strchr(one, ' ') != NULL) {
-			putchar('"');
-			strbuf_addch(&onebuf, '"');
-			one = onebuf.buf;
-		}
 		printf("%s\n", one);
 		strbuf_release(&onebuf);
 	}
