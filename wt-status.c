@@ -243,18 +243,7 @@ static void wt_status_print_trailer(struct wt_status *s)
 	status_printf_ln(s, color(WT_STATUS_HEADER, s), "");
 }
 
-static char *quote_path(const char *in, const char *prefix,
-			  struct strbuf *out)
-{
-	char *one;
-	one = quote_path_relative(in, prefix, out);
-	if (*one != '"' && strchr(one, ' ') != NULL) {
-		strbuf_insert(out, 0, "\"", 1);
-		strbuf_addch(out, '"');
-		one = out->buf;
-	}
-	return one;
-}
+#define quote_path quote_path_relative
 
 static const char *wt_status_unmerged_status_string(int stagemask)
 {
