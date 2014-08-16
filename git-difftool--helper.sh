@@ -21,6 +21,16 @@ should_prompt () {
 	fi
 }
 
+should_show_status () {
+	status=$(git config --bool difftool.status || echo false)
+	if test "$status" = true
+	then
+		test -z "$GIT_DIFFTOOL_NO_STATUS"
+	else
+		test -n "$GIT_DIFFTOOL_STATUS"
+	fi
+}
+
 # Indicates that --extcmd=... was specified
 use_ext_cmd () {
 	test -n "$GIT_DIFFTOOL_EXTCMD"
@@ -40,8 +50,25 @@ launch_merge_tool () {
 	# the user with the real $MERGED name before launching $merge_tool.
 	if should_prompt
 	then
-		printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
-			"$GIT_DIFF_PATH_TOTAL" "$MERGED"
+		if should_show_status
+		then
+			# Compare the LOCAL and REMOTE files with 'git diff --stat' to
+			# find out the number of lines changed.
+			# For it to work remove anything other than the diff options
+			# from the original diff arguments.
+			for x in $GIT_DIFF_ARGS
+			do
+				test "$x" != "--staged" && \
+				test "$x" != "--cached" && \
+				test "$x" != "--" && \
+				echo "$x" | grep '^-' >/dev/null && \
+				diff_stat_args="$diff_stat_args $x"
+			done
+			changes=$(git diff --stat $diff_stat_args -- $LOCAL $REMOTE | tail -1)
+			test -z "$changes" && changes=" 1 file changed, 0 insertions(+), 0 deletions(-)"
+		fi
+		printf "\nViewing (%s/%s): '%s'\n%s\n" "$GIT_DIFF_PATH_COUNTER" \
+			"$GIT_DIFF_PATH_TOTAL" "$MERGED" "$changes"
 		if use_ext_cmd
 		then
 			printf "Launch '%s' [Y/n]: " \

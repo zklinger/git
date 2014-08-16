@@ -32,6 +32,7 @@ usage: git difftool [-t|--tool=<tool>] [--tool-help]
                     [-g|--gui] [--no-gui]
                     [--prompt] [-y|--no-prompt]
                     [-d|--dir-diff]
+                    [--status] --no-status]
                     ['git diff' options]
 USAGE
 	exit($exitcode);
@@ -341,6 +342,7 @@ sub main
 		prompt => undef,
 		symlinks => $^O ne 'cygwin' &&
 				$^O ne 'MSWin32' && $^O ne 'msys',
+		status => undef,
 		tool_help => undef,
 		trust_exit_code => undef,
 	);
@@ -355,6 +357,7 @@ sub main
 		'tool-help' => \$opts{tool_help},
 		'trust-exit-code' => \$opts{trust_exit_code},
 		'no-trust-exit-code' => sub { $opts{trust_exit_code} = 0; },
+		'status!' => \$opts{status},
 		'x|extcmd:s' => \$opts{extcmd});
 
 	if (defined($opts{help})) {
@@ -383,6 +386,13 @@ sub main
 		my $guitool = Git::config('diff.guitool');
 		if (defined($guitool) && length($guitool) > 0) {
 			$ENV{GIT_DIFF_TOOL} = $guitool;
+		}
+	}
+	if (defined($opts{status})) {
+		if ($opts{status}) {
+			$ENV{GIT_DIFFTOOL_STATUS} = 'true';
+		} else {
+			$ENV{GIT_DIFFTOOL_NO_STATUS} = 'true';
 		}
 	}
 
@@ -486,6 +496,7 @@ sub file_diff
 
 	$ENV{GIT_PAGER} = '';
 	$ENV{GIT_EXTERNAL_DIFF} = 'git-difftool--helper';
+	$ENV{GIT_DIFF_ARGS} = join(' ', @ARGV);
 
 	# ActiveState Perl for Win32 does not implement POSIX semantics of
 	# exec* system call. It just spawns the given executable and finishes
