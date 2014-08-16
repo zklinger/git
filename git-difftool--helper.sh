@@ -21,6 +21,17 @@ should_prompt () {
 	fi
 }
 
+should_show_status () {
+	test -n "$GIT_DIFFTOOL_STATUS"
+	#status=$(git config --bool difftool.status || echo true)
+	#if test "$status" = true
+	#then
+	#	test -z "$GIT_DIFFTOOL_NO_STATUS"
+	#else
+	#	test -n "$GIT_DIFFTOOL_STATUS"
+	#fi
+}
+
 # Indicates that --extcmd=... was specified
 use_ext_cmd () {
 	test -n "$GIT_DIFFTOOL_EXTCMD"
@@ -42,6 +53,11 @@ launch_merge_tool () {
 	then
 		printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
 			"$GIT_DIFF_PATH_TOTAL" "$MERGED"
+		if should_show_status
+		then
+			read added deleted stuff <<<$(git diff --numstat $GIT_DIFF_ARGS -- "$MERGED")
+			printf "%s insertions(+) %s deletions(-)\n" $added $deleted
+		fi
 		if use_ext_cmd
 		then
 			printf "Launch '%s' [Y/n]: " \

@@ -345,6 +345,7 @@ sub main
 		prompt => undef,
 		symlinks => $^O ne 'cygwin' &&
 				$^O ne 'MSWin32' && $^O ne 'msys',
+		status => undef,
 		tool_help => undef,
 	);
 	GetOptions('g|gui!' => \$opts{gui},
@@ -356,6 +357,7 @@ sub main
 		'no-symlinks' => sub { $opts{symlinks} = 0; },
 		't|tool:s' => \$opts{difftool_cmd},
 		'tool-help' => \$opts{tool_help},
+		'status' => \$opts{status},
 		'x|extcmd:s' => \$opts{extcmd});
 
 	if (defined($opts{help})) {
@@ -385,6 +387,9 @@ sub main
 		if (defined($guitool) && length($guitool) > 0) {
 			$ENV{GIT_DIFF_TOOL} = $guitool;
 		}
+	}
+	if (defined($opts{status})) {
+		$ENV{GIT_DIFFTOOL_STATUS} = 'true';
 	}
 
 	# In directory diff mode, 'git-difftool--helper' is called once
@@ -484,6 +489,7 @@ sub file_diff
 	# the starting program, exiting with code 0.
 	# system will at least catch the errors returned by git diff,
 	# allowing the caller of git difftool better handling of failures.
+	$ENV{GIT_DIFF_ARGS} = join(' ', @ARGV);
 	my $rc = system('git', 'diff', @ARGV);
 	exit($rc | ($rc >> 8));
 }
