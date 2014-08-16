@@ -357,7 +357,7 @@ sub main
 		'no-symlinks' => sub { $opts{symlinks} = 0; },
 		't|tool:s' => \$opts{difftool_cmd},
 		'tool-help' => \$opts{tool_help},
-		'status' => \$opts{status},
+		'status!' => \$opts{status},
 		'x|extcmd:s' => \$opts{extcmd});
 
 	if (defined($opts{help})) {
@@ -389,7 +389,11 @@ sub main
 		}
 	}
 	if (defined($opts{status})) {
-		$ENV{GIT_DIFFTOOL_STATUS} = 'true';
+		if ($opts{status}) {
+			$ENV{GIT_DIFFTOOL_STATUS} = 'true';
+		} else {
+			$ENV{GIT_DIFFTOOL_NO_STATUS} = 'true';
+		}
 	}
 
 	# In directory diff mode, 'git-difftool--helper' is called once

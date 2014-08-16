@@ -22,14 +22,13 @@ should_prompt () {
 }
 
 should_show_status () {
-	test -n "$GIT_DIFFTOOL_STATUS"
-	#status=$(git config --bool difftool.status || echo true)
-	#if test "$status" = true
-	#then
-	#	test -z "$GIT_DIFFTOOL_NO_STATUS"
-	#else
-	#	test -n "$GIT_DIFFTOOL_STATUS"
-	#fi
+	status=$(git config --bool difftool.status || echo false)
+	if test "$status" = true
+	then
+		test -z "$GIT_DIFFTOOL_NO_STATUS"
+	else
+		test -n "$GIT_DIFFTOOL_STATUS"
+	fi
 }
 
 # Indicates that --extcmd=... was specified
