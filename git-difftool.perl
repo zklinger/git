@@ -478,6 +478,10 @@ sub file_diff
 
 	$ENV{GIT_PAGER} = '';
 	$ENV{GIT_EXTERNAL_DIFF} = 'git-difftool--helper';
+	$ENV{GIT_DIFF_ARGS} = join(' ', @ARGV);
+	if (ignore_whitespace()) {
+		$ENV{GIT_DIFF_IGNORE_WHITESPACE} = 'true';
+	}
 
 	# ActiveState Perl for Win32 does not implement POSIX semantics of
 	# exec* system call. It just spawns the given executable and finishes
@@ -486,6 +490,19 @@ sub file_diff
 	# allowing the caller of git difftool better handling of failures.
 	my $rc = system('git', 'diff', @ARGV);
 	exit($rc | ($rc >> 8));
+}
+
+sub ignore_whitespace
+{
+	my @args = ("--ignore-space-at-eol",
+		"-b", "--ignore-space-change",
+		"-w", "--ignore-all-space");
+	for my $arg (@ARGV) {
+		if (grep {$arg eq $_} @args) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 main();

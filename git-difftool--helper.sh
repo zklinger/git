@@ -21,6 +21,16 @@ should_prompt () {
 	fi
 }
 
+has_changes () {
+	if test -n "$GIT_DIFF_IGNORE_WHITESPACE"
+	then
+		read added deleted stuff <<<$(git diff --numstat $GIT_DIFF_ARGS -- "$1")
+		test $added -gt 0 || test $deleted -gt 0
+	else
+		true
+	fi
+}
+
 # Indicates that --extcmd=... was specified
 use_ext_cmd () {
 	test -n "$GIT_DIFFTOOL_EXTCMD"
@@ -40,27 +50,37 @@ launch_merge_tool () {
 	# the user with the real $MERGED name before launching $merge_tool.
 	if should_prompt
 	then
-		printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
-			"$GIT_DIFF_PATH_TOTAL" "$MERGED"
-		if use_ext_cmd
+		if has_changes "$MERGED"
 		then
-			printf "Launch '%s' [Y/n]: " \
-				"$GIT_DIFFTOOL_EXTCMD"
+			printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
+				"$GIT_DIFF_PATH_TOTAL" "$MERGED"
+			if use_ext_cmd
+			then
+				printf "Launch '%s' [Y/n]: " \
+					"$GIT_DIFFTOOL_EXTCMD"
+			else
+				printf "Launch '%s' [Y/n]: " "$merge_tool"
+			fi
+			if read ans && test "$ans" = n
+			then
+				return
+			fi
 		else
-			printf "Launch '%s' [Y/n]: " "$merge_tool"
-		fi
-		if read ans && test "$ans" = n
-		then
+			printf "\nSkipping (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
+				"$GIT_DIFF_PATH_TOTAL" "$MERGED"
 			return
 		fi
 	fi
 
-	if use_ext_cmd
+	if has_changes "$MERGED"
 	then
-		export BASE
-		eval $GIT_DIFFTOOL_EXTCMD '"$LOCAL"' '"$REMOTE"'
-	else
-		run_merge_tool "$merge_tool"
+		if use_ext_cmd
+		then
+			export BASE
+			eval $GIT_DIFFTOOL_EXTCMD '"$LOCAL"' '"$REMOTE"'
+		else
+			run_merge_tool "$merge_tool"
+		fi
 	fi
 }
 
