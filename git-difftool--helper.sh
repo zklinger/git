@@ -24,7 +24,8 @@ should_prompt () {
 has_changes () {
 	if test -n "$GIT_DIFF_IGNORE_WHITESPACE"
 	then
-		read added deleted stuff <<<$(git diff --numstat $GIT_DIFF_ARGS -- "$1")
+		echo $GIT_DIFF_ARGS
+		read added deleted stuff <<<$(eval git diff --numstat "$GIT_DIFF_ARGS" -- "$1")
 		test $added -gt 0 || test $deleted -gt 0
 	else
 		true

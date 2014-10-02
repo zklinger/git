@@ -477,7 +477,7 @@ sub file_diff
 	}
 
 	$ENV{GIT_PAGER} = '';
-	$ENV{GIT_EXTERNAL_DIFF} = 'git-difftool--helper';
+	$ENV{GIT_EXTERNAL_DIFF} = 'git-difftool--helper.sh';
 	$ENV{GIT_DIFF_ARGS} = join(' ', @ARGV);
 	if (ignore_whitespace()) {
 		$ENV{GIT_DIFF_IGNORE_WHITESPACE} = 'true';
