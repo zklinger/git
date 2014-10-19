@@ -1085,6 +1085,7 @@ static void show_line(struct grep_opt *opt, char *bol, char *eol,
 {
 	int rest = eol - bol;
 	char *line_color = NULL;
+	int count = 0;
 
 	if (opt->file_break && opt->last_shown == 0) {
 		if (opt->show_hunk_mark)
@@ -1116,34 +1117,42 @@ static void show_line(struct grep_opt *opt, char *bol, char *eol,
 		output_color(opt, buf, strlen(buf), opt->color_lineno);
 		output_sep(opt, sign);
 	}
-	if (opt->color) {
+	if (opt->color || opt->match_only) {
 		regmatch_t match;
 		enum grep_context ctx = GREP_CONTEXT_BODY;
 		int ch = *eol;
 		int eflags = 0;
+		char *match_color = NULL;
 
-		if (sign == ':')
-			line_color = opt->color_selected;
-		else if (sign == '-')
-			line_color = opt->color_context;
-		else if (sign == '=')
-			line_color = opt->color_function;
+		if (opt->color) {
+			match_color = opt->color_match;
+			if (sign == ':')
+				line_color = opt->color_selected;
+			else if (sign == '-')
+				line_color = opt->color_context;
+			else if (sign == '=')
+				line_color = opt->color_function;
+		}
 		*eol = '\0';
 		while (next_match(opt, bol, eol, ctx, &match, eflags)) {
 			if (match.rm_so == match.rm_eo)
 				break;
 
-			output_color(opt, bol, match.rm_so, line_color);
+			if (!opt->match_only)
+				output_color(opt, bol, match.rm_so, line_color);
+			if (opt->match_only && count++)
+				opt->output(opt, "\n", 1);
 			output_color(opt, bol + match.rm_so,
 				     match.rm_eo - match.rm_so,
-				     opt->color_match);
+				     match_color);
 			bol += match.rm_eo;
 			rest -= match.rm_eo;
 			eflags = REG_NOTBOL;
 		}
 		*eol = ch;
 	}
-	output_color(opt, bol, rest, line_color);
+	if (!opt->match_only || count == 0)
+		output_color(opt, bol, rest, line_color);
 	opt->output(opt, "\n", 1);
 }
 

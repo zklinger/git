@@ -685,6 +685,8 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
 		OPT_BOOL('L', "files-without-match",
 			&opt.unmatch_name_only,
 			N_("show only the names of files without match")),
+		OPT_BOOL('o', "only-matching", &opt.match_only,
+			N_("show only the matching part, not the entire line")),
 		OPT_BOOL('z', "null", &opt.null_following_name,
 			N_("print NUL after filenames")),
 		OPT_BOOL('c', "count", &opt.count,

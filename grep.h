@@ -98,6 +98,7 @@ struct grep_opt {
 	int status_only;
 	int name_only;
 	int unmatch_name_only;
+	int match_only;
 	int count;
 	int word_regexp;
 	int fixed;

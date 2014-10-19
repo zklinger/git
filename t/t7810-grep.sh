@@ -1202,4 +1202,78 @@ test_expect_success LIBPCRE 'grep -P "^ "' '
 	test_cmp expected actual
 '
 
+cat >expected <<EOF
+bar_mmap
+EOF
+
+test_expect_success 'grep --only-matching without file name' '
+	git grep -h --only-matching bar_mmap file >actual &&
+	test_cmp expected actual
+'
+
+cat >expected <<EOF
+file:bar_mmap
+EOF
+
+test_expect_success 'grep --only-matching with file name' '
+	git grep --only-matching bar_mmap file >actual &&
+	test_cmp expected actual
+'
+
+cat >expected <<EOF
+file:<RED>bar_mmap<RESET>
+EOF
+
+test_expect_success 'grep --only-matching --color' '
+	test_config color.grep.context		normal &&
+	test_config color.grep.filename		normal &&
+	test_config color.grep.function		normal &&
+	test_config color.grep.linenumber	normal &&
+	test_config color.grep.match		red &&
+	test_config color.grep.selected		normal &&
+	test_config color.grep.separator	normal &&
+	git grep --color=always --only-matching bar_mmap file |
+	test_decode_color >actual &&
+	test_cmp expected actual
+'
+
+cat >expected <<EOF
+file-foo_mmap bar mmap
+file:bar_mmap
+file-foo_mmap bar mmap baz
+EOF
+
+test_expect_success 'grep --only-matching with context' '
+	git grep -C1 --only-matching bar_mmap file >actual &&
+	test_cmp expected actual
+'
+
+cat >expected <<EOF
+file:foo
+bar_mmap
+EOF
+
+test_expect_success 'grep --only-matching with multiple matches' '
+	git grep --only-matching -e bar_mmap --and -e foo file >actual &&
+	test_cmp expected actual
+'
+
+cat >expected <<EOF
+file:<RED>foo<RESET>
+<RED>bar_mmap<RESET>
+EOF
+
+test_expect_success 'grep --only-matching --color  with multiple matches' '
+	test_config color.grep.context		normal &&
+	test_config color.grep.filename		normal &&
+	test_config color.grep.function		normal &&
+	test_config color.grep.linenumber	normal &&
+	test_config color.grep.match		red &&
+	test_config color.grep.selected		normal &&
+	test_config color.grep.separator	normal &&
+	git grep --color=always --only-matching -e bar_mmap --and -e foo file |
+	test_decode_color >actual &&
+	test_cmp expected actual
+'
+
 test_done

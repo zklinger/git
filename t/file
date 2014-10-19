@@ -1,0 +1,5 @@
+foo mmap bar
+foo_mmap bar
+foo_mmap bar mmap
+foo mmap bar_mmap
+foo_mmap bar mmap baz
