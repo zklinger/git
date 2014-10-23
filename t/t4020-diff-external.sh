@@ -206,6 +206,39 @@ test_expect_success 'GIT_EXTERNAL_DIFF path counter/total' '
 	test_cmp expect counter.txt
 '
 
+test_expect_success 'GIT_EXTERNAL_DIFF found changes' '
+	echo the quick brown fox >whitespace.txt &&
+	git add whitespace.txt &&
+	echo "  the    quick    brown    fox  " >whitespace.txt &&
+	write_script found_changes.sh <<-\EOF &&
+	echo $GIT_DIFF_FOUND_CHANGES >>changes.txt
+	EOF
+	>changes.txt &&
+	cat >expect <<-\EOF &&
+	1
+	1
+	1
+	EOF
+	GIT_EXTERNAL_DIFF=./found_changes.sh git diff &&
+	test_cmp expect changes.txt
+'
+
+test_expect_success 'GIT_EXTERNAL_DIFF ignore whitespace changes' '
+	cat >expect <<-\EOF &&
+	1
+	1
+	0
+	EOF
+	rm changes.txt &&
+	GIT_EXTERNAL_DIFF=./found_changes.sh git diff --ignore-all-space &&
+	test_cmp expect changes.txt
+'
+
+test_expect_success 'clean up whitespace leftovers' '
+	git update-index --force-remove whitespace.txt &&
+	rm whitespace.txt
+'
+
 test_expect_success 'GIT_EXTERNAL_DIFF generates pretty paths' '
 	touch file.ext &&
 	git add file.ext &&

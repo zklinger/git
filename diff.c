@@ -2952,6 +2952,7 @@ static void run_external_diff(const char *pgm,
 
 	argv_array_pushf(&env, "GIT_DIFF_PATH_COUNTER=%d", ++o->diff_path_counter);
 	argv_array_pushf(&env, "GIT_DIFF_PATH_TOTAL=%d", q->nr);
+	argv_array_pushf(&env, "GIT_DIFF_FOUND_CHANGES=%d", o->found_changes);
 
 	if (run_command_v_opt_cd_env(argv.argv, RUN_USING_SHELL, NULL, env.argv))
 		die(_("external diff died, stopping at %s"), name);
@@ -3033,6 +3034,9 @@ static void fill_metainfo(struct strbuf *msg,
 	}
 }
 
+static void diff_flush_stat(struct diff_filepair *p, struct diff_options *o,
+			    struct diffstat_t *diffstat);
+
 static void run_diff_cmd(const char *pgm,
 			 const char *name,
 			 const char *other,
@@ -3066,6 +3070,14 @@ static void run_diff_cmd(const char *pgm,
 	}
 
 	if (pgm) {
+		o->found_changes = 1;
+		if (DIFF_OPT_TST(o, DIFF_FROM_CONTENTS)) {
+			struct diffstat_t diffstat;
+			memset(&diffstat, 0, sizeof(struct diffstat_t));
+			diff_flush_stat(p, o, &diffstat);
+			o->found_changes = (diffstat.files[0]->added || diffstat.files[0]->deleted);
+		}
+
 		run_external_diff(pgm, name, other, one, two, xfrm_msg,
 				  complete_rewrite, o);
 		return;

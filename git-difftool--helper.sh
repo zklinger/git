@@ -40,27 +40,36 @@ launch_merge_tool () {
 	# the user with the real $MERGED name before launching $merge_tool.
 	if should_prompt
 	then
-		printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
-			"$GIT_DIFF_PATH_TOTAL" "$MERGED"
-		if use_ext_cmd
+		if test $GIT_DIFF_FOUND_CHANGES -eq 1
 		then
-			printf "Launch '%s' [Y/n]: " \
-				"$GIT_DIFFTOOL_EXTCMD"
+			printf "\nViewing (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
+				"$GIT_DIFF_PATH_TOTAL" "$MERGED"
+			if use_ext_cmd
+			then
+				printf "Launch '%s' [Y/n]: " \
+					"$GIT_DIFFTOOL_EXTCMD"
+			else
+				printf "Launch '%s' [Y/n]: " "$merge_tool"
+			fi
+			if read ans && test "$ans" = n
+			then
+				return
+			fi
 		else
-			printf "Launch '%s' [Y/n]: " "$merge_tool"
-		fi
-		if read ans && test "$ans" = n
-		then
-			return
+			printf "\nSkipping (%s/%s): '%s'\n" "$GIT_DIFF_PATH_COUNTER" \
+				"$GIT_DIFF_PATH_TOTAL" "$MERGED"
 		fi
 	fi
 
-	if use_ext_cmd
+	if test $GIT_DIFF_FOUND_CHANGES -eq 1
 	then
-		export BASE
-		eval $GIT_DIFFTOOL_EXTCMD '"$LOCAL"' '"$REMOTE"'
-	else
-		run_merge_tool "$merge_tool"
+		if use_ext_cmd
+		then
+			export BASE
+			eval $GIT_DIFFTOOL_EXTCMD '"$LOCAL"' '"$REMOTE"'
+		else
+			run_merge_tool "$merge_tool"
+		fi
 	fi
 }
 
