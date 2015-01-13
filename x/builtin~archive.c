@@ -1,0 +1,6 @@
+#include "archive.h"
+#include "builtin.h"
+#include "cache.h"
+#include "parse-options.h"
+#include "pkt-line.h"
+#include "sideband.h"

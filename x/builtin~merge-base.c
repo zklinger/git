@@ -1,0 +1,6 @@
+#include "builtin.h"
+#include "cache.h"
+#include "commit.h"
+#include "diff.h"
+#include "parse-options.h"
+#include "refs.h"

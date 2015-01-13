@@ -1,0 +1,7 @@
+#include "argv-array.h"
+#include "parse-options.h"
+#include "remote.h"
+#include "run-command.h"
+#include "strbuf.h"
+#include "string-list.h"
+#include "transport.h"

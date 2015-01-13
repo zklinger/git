@@ -1,0 +1,8 @@
+#include "builtin.h"
+#include "cache.h"
+#include "commit.h"
+#include "diff.h"
+#include "mailmap.h"
+#include "parse-options.h"
+#include "string-list.h"
+#include "utf8.h"

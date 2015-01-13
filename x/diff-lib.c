@@ -1,0 +1,6 @@
+#include "cache-tree.h"
+#include "commit.h"
+#include "diff.h"
+#include "quote.h"
+#include "refs.h"
+#include "submodule.h"

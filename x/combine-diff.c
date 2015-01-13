@@ -1,0 +1,8 @@
+#include "blob.h"
+#include "commit.h"
+#include "diff.h"
+#include "log-tree.h"
+#include "quote.h"
+#include "refs.h"
+#include "revision.h"
+#include "userdiff.h"

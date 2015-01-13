@@ -1,0 +1,6 @@
+#include "builtin.h"
+#include "cache-tree.h"
+#include "object.h"
+#include "resolve-undo.h"
+#include "tree-walk.h"
+#include "tree.h"

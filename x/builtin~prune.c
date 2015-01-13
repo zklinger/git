@@ -1,0 +1,6 @@
+#include "commit.h"
+#include "diff.h"
+#include "dir.h"
+#include "parse-options.h"
+#include "progress.h"
+#include "reachable.h"

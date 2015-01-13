@@ -1,0 +1,7 @@
+#include "builtin.h"
+#include "cache.h"
+#include "commit.h"
+#include "exec_cmd.h"
+#include "notes-utils.h"
+#include "notes.h"
+#include "string-list.h"

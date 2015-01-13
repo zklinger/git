@@ -1,0 +1,6 @@
+#include "argv-array.h"
+#include "cache.h"
+#include "dir.h"
+#include "sigchain.h"
+#include "strbuf.h"
+#include "string-list.h"

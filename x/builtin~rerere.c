@@ -1,0 +1,5 @@
+#include "builtin.h"
+#include "cache.h"
+#include "dir.h"
+#include "string-list.h"
+#include "xdiff\/xdiff.h"

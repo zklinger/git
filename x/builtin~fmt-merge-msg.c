@@ -1,0 +1,7 @@
+#include "branch.h"
+#include "cache.h"
+#include "commit.h"
+#include "diff.h"
+#include "gpg-interface.h"
+#include "string-list.h"
+#include "tag.h"

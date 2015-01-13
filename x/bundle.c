@@ -1,0 +1,5 @@
+#include "argv-array.h"
+#include "commit.h"
+#include "diff.h"
+#include "list-objects.h"
+#include "object.h"

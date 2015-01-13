@@ -1,0 +1,8 @@
+#include "builtin.h"
+#include "commit.h"
+#include "diff.h"
+#include "graph.h"
+#include "list-objects.h"
+#include "log-tree.h"
+#include "pack-bitmap.h"
+#include "revision.h"

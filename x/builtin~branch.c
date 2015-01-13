@@ -1,0 +1,8 @@
+#include "branch.h"
+#include "builtin.h"
+#include "color.h"
+#include "commit.h"
+#include "diff.h"
+#include "parse-options.h"
+#include "string-list.h"
+#include "utf8.h"

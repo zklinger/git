@@ -1,0 +1,7 @@
+#include "builtin.h"
+#include "cache-tree.h"
+#include "quote.h"
+#include "refs.h"
+#include "resolve-undo.h"
+#include "split-index.h"
+#include "tree-walk.h"

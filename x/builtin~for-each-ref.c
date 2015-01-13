@@ -1,0 +1,8 @@
+#include "blob.h"
+#include "builtin.h"
+#include "cache.h"
+#include "commit.h"
+#include "object.h"
+#include "parse-options.h"
+#include "quote.h"
+#include "tree.h"
