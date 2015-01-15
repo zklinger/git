@@ -18,7 +18,7 @@ do
         sed -i "/$escaped/d" $file || echo fix $file $line $escaped
         object=$(echo $file | sed 's/\.c$/\.o/')
         rm -rf $object
-        make &> /tmp/make.out && echo "========>> $file: $line NOT NEEDED"
+        make CFLAGS=-Werror &> /tmp/make.out && echo "========>> $file: $line NOT NEEDED"
         git co -- $file
     done </tmp/includes
 done </tmp/inputfiles
