@@ -5,7 +5,6 @@
 #include "refs.h"
 #include "list-objects.h"
 #include "quote.h"
-#include "sha1-lookup.h"
 #include "run-command.h"
 #include "log-tree.h"
 #include "bisect.h"
