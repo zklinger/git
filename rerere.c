@@ -4,9 +4,7 @@
 #include "rerere.h"
 #include "xdiff-interface.h"
 #include "dir.h"
-#include "resolve-undo.h"
 #include "ll-merge.h"
-#include "attr.h"
 #include "pathspec.h"
 
 #define RESOLVED 0

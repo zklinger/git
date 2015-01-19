@@ -6,7 +6,6 @@
 #include "log-tree.h"
 #include "reflog-walk.h"
 #include "refs.h"
-#include "string-list.h"
 #include "color.h"
 #include "gpg-interface.h"
 #include "sequencer.h"

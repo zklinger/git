@@ -3,7 +3,6 @@
 #include "tag.h"
 #include "blob.h"
 #include "http.h"
-#include "refs.h"
 #include "diff.h"
 #include "revision.h"
 #include "exec_cmd.h"

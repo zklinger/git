@@ -8,7 +8,6 @@
 #include "delta.h"
 #include "xdiff-interface.h"
 #include "color.h"
-#include "attr.h"
 #include "run-command.h"
 #include "utf8.h"
 #include "userdiff.h"

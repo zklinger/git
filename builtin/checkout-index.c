@@ -7,7 +7,6 @@
 #include "builtin.h"
 #include "lockfile.h"
 #include "quote.h"
-#include "cache-tree.h"
 #include "parse-options.h"
 
 #define CHECKOUT_ALL 4

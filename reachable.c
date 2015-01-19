@@ -3,7 +3,6 @@
 #include "tag.h"
 #include "commit.h"
 #include "blob.h"
-#include "diff.h"
 #include "revision.h"
 #include "reachable.h"
 #include "cache-tree.h"

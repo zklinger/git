@@ -1,6 +1,5 @@
 #include "cache.h"
 #include "exec_cmd.h"
-#include "quote.h"
 #define MAX_ARGS	32
 
 static const char *argv_exec_path;

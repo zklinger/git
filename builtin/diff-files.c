@@ -5,7 +5,6 @@
  */
 #include "cache.h"
 #include "diff.h"
-#include "commit.h"
 #include "revision.h"
 #include "builtin.h"
 #include "submodule.h"

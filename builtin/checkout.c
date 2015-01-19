@@ -8,7 +8,6 @@
 #include "cache-tree.h"
 #include "unpack-trees.h"
 #include "dir.h"
-#include "run-command.h"
 #include "merge-recursive.h"
 #include "branch.h"
 #include "diff.h"
@@ -19,7 +18,6 @@
 #include "ll-merge.h"
 #include "resolve-undo.h"
 #include "submodule.h"
-#include "argv-array.h"
 
 static const char * const checkout_usage[] = {
 	N_("git checkout [options] <branch>"),

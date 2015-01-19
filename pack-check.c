@@ -1,6 +1,5 @@
 #include "cache.h"
 #include "pack.h"
-#include "pack-revindex.h"
 #include "progress.h"
 
 struct idx_entry {

@@ -1,13 +1,11 @@
 #include "builtin.h"
 #include "commit.h"
-#include "refs.h"
 #include "pkt-line.h"
 #include "sideband.h"
 #include "run-command.h"
 #include "remote.h"
 #include "connect.h"
 #include "send-pack.h"
-#include "quote.h"
 #include "transport.h"
 #include "version.h"
 #include "sha1-array.h"
@@ -342,7 +340,6 @@ int send_pack(struct send_pack_args *args,
 		strbuf_addf(&cap_buf, " agent=%s", git_user_agent_sanitized());
 
 	/*
-	 * NEEDSWORK: why does delete-refs have to be so specific to
 	 * send-pack machinery that set_ref_status_for_push() cannot
 	 * set this bit for us???
 	 */

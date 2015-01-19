@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "blob.h"
 #include "dir.h"
 #include "streaming.h"
 

@@ -1,7 +1,6 @@
 #include "cache.h"
 #include "lockfile.h"
 #include "credential.h"
-#include "string-list.h"
 #include "parse-options.h"
 
 static struct lock_file credential_lock;

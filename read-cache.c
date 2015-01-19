@@ -9,7 +9,6 @@
 #include "cache-tree.h"
 #include "refs.h"
 #include "dir.h"
-#include "tree.h"
 #include "commit.h"
 #include "blob.h"
 #include "resolve-undo.h"

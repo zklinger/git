@@ -1,15 +1,12 @@
 #include "builtin.h"
 #include "commit.h"
-#include "refs.h"
 #include "pkt-line.h"
-#include "sideband.h"
 #include "run-command.h"
 #include "remote.h"
 #include "connect.h"
 #include "send-pack.h"
 #include "quote.h"
 #include "transport.h"
-#include "version.h"
 #include "sha1-array.h"
 
 static const char send_pack_usage[] =

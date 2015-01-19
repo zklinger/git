@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "refs.h"
 #include "utf8.h"
 
 int starts_with(const char *str, const char *prefix)

@@ -6,7 +6,6 @@
 
 #include "cache.h"
 #include "lockfile.h"
-#include "object.h"
 #include "tree.h"
 #include "tree-walk.h"
 #include "cache-tree.h"
@@ -14,7 +13,6 @@
 #include "dir.h"
 #include "builtin.h"
 #include "parse-options.h"
-#include "resolve-undo.h"
 
 static int nr_trees;
 static int read_empty;

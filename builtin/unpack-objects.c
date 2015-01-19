@@ -7,7 +7,6 @@
 #include "commit.h"
 #include "tag.h"
 #include "tree.h"
-#include "tree-walk.h"
 #include "progress.h"
 #include "decorate.h"
 #include "fsck.h"

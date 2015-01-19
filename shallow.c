@@ -6,7 +6,6 @@
 #include "remote.h"
 #include "refs.h"
 #include "sha1-array.h"
-#include "diff.h"
 #include "revision.h"
 #include "commit-slab.h"
 #include "sigchain.h"

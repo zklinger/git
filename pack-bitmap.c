@@ -1,7 +1,6 @@
 #include "cache.h"
 #include "commit.h"
 #include "tag.h"
-#include "diff.h"
 #include "revision.h"
 #include "progress.h"
 #include "list-objects.h"

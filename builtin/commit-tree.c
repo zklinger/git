@@ -5,9 +5,7 @@
  */
 #include "cache.h"
 #include "commit.h"
-#include "tree.h"
 #include "builtin.h"
-#include "utf8.h"
 #include "gpg-interface.h"
 
 static const char commit_tree_usage[] = "git commit-tree [(-p <sha1>)...] [-S[<keyid>]] [-m <message>] [-F <file>] <sha1> <changelog";

@@ -5,10 +5,7 @@
  */
 
 #include "cache.h"
-#include "color.h"
 #include "commit.h"
-#include "blob.h"
-#include "tag.h"
 #include "diff.h"
 #include "diffcore.h"
 #include "revision.h"

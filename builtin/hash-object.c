@@ -8,7 +8,6 @@
 #include "blob.h"
 #include "quote.h"
 #include "parse-options.h"
-#include "exec_cmd.h"
 
 /*
  * This is to create corrupt objects for debugging and as such it

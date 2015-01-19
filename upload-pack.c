@@ -8,7 +8,6 @@
 #include "exec_cmd.h"
 #include "diff.h"
 #include "revision.h"
-#include "list-objects.h"
 #include "run-command.h"
 #include "connect.h"
 #include "sigchain.h"

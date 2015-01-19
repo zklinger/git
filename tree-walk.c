@@ -1,6 +1,5 @@
 #include "cache.h"
 #include "tree-walk.h"
-#include "unpack-trees.h"
 #include "dir.h"
 #include "tree.h"
 #include "pathspec.h"

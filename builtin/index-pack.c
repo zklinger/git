@@ -8,7 +8,6 @@
 #include "tree.h"
 #include "progress.h"
 #include "fsck.h"
-#include "exec_cmd.h"
 #include "streaming.h"
 #include "thread-utils.h"
 

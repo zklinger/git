@@ -10,7 +10,6 @@
 #include "tree-walk.h"
 #include "builtin.h"
 #include "refs.h"
-#include "resolve-undo.h"
 #include "parse-options.h"
 #include "pathspec.h"
 #include "dir.h"

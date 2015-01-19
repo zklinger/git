@@ -3,7 +3,6 @@
 #include "builtin.h"
 #include "parse-options.h"
 #include "quote.h"
-#include "argv-array.h"
 
 static const char * const git_update_ref_usage[] = {
 	N_("git update-ref [options] -d <refname> [<oldval>]"),

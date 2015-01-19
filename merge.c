@@ -2,7 +2,6 @@
 #include "lockfile.h"
 #include "commit.h"
 #include "run-command.h"
-#include "resolve-undo.h"
 #include "tree-walk.h"
 #include "unpack-trees.h"
 #include "dir.h"

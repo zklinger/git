@@ -7,7 +7,6 @@
 #include "refs.h"
 #include "pack.h"
 #include "cache-tree.h"
-#include "tree-walk.h"
 #include "fsck.h"
 #include "parse-options.h"
 #include "dir.h"

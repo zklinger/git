@@ -1,6 +1,5 @@
 #include "builtin.h"
 #include "cache.h"
-#include "dir.h"
 #include "parse-options.h"
 #include "string-list.h"
 #include "rerere.h"

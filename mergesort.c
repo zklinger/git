@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "mergesort.h"
 
 struct mergesort_sublist {
 	void *ptr;

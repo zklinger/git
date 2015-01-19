@@ -5,7 +5,6 @@
  */
 #include "cache.h"
 #include "lockfile.h"
-#include "color.h"
 #include "commit.h"
 #include "blob.h"
 #include "tag.h"

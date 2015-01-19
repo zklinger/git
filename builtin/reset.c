@@ -9,8 +9,6 @@
  */
 #include "builtin.h"
 #include "lockfile.h"
-#include "tag.h"
-#include "object.h"
 #include "commit.h"
 #include "run-command.h"
 #include "refs.h"

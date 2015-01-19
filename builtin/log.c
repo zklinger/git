@@ -5,7 +5,6 @@
  *		 2006 Junio Hamano
  */
 #include "cache.h"
-#include "color.h"
 #include "commit.h"
 #include "diff.h"
 #include "revision.h"

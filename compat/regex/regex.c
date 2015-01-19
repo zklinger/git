@@ -19,7 +19,6 @@
    02110-1301 USA.  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 /* Make sure no one compiles this code with a C++ compiler.  */
@@ -68,14 +67,11 @@
 #include <regex.h>
 #include "regex_internal.h"
 
-#include "regex_internal.c"
 #ifdef GAWK
 #define bool int
 #define true (1)
 #define false (0)
 #endif
-#include "regcomp.c"
-#include "regexec.c"
 
 /* Binary backward compatibility.  */
 #if _LIBC

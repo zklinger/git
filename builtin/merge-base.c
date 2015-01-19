@@ -2,7 +2,6 @@
 #include "cache.h"
 #include "commit.h"
 #include "refs.h"
-#include "diff.h"
 #include "revision.h"
 #include "parse-options.h"
 

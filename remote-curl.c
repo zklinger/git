@@ -7,7 +7,6 @@
 #include "run-command.h"
 #include "pkt-line.h"
 #include "string-list.h"
-#include "sideband.h"
 #include "argv-array.h"
 #include "credential.h"
 #include "sha1-array.h"

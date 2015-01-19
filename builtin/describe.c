@@ -4,7 +4,6 @@
 #include "tag.h"
 #include "refs.h"
 #include "builtin.h"
-#include "exec_cmd.h"
 #include "parse-options.h"
 #include "diff.h"
 #include "hashmap.h"

@@ -1,7 +1,6 @@
 #include "cache.h"
 #include "commit.h"
 #include "refs.h"
-#include "diff.h"
 #include "revision.h"
 #include "string-list.h"
 #include "reflog-walk.h"

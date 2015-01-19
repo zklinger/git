@@ -2,13 +2,10 @@
  * "git push"
  */
 #include "cache.h"
-#include "refs.h"
-#include "run-command.h"
 #include "builtin.h"
 #include "remote.h"
 #include "transport.h"
 #include "parse-options.h"
-#include "submodule.h"
 
 static const char * const push_usage[] = {
 	N_("git push [<options>] [<repository> [<refspec>...]]"),

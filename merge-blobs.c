@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "run-command.h"
 #include "xdiff-interface.h"
 #include "ll-merge.h"
 #include "blob.h"

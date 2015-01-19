@@ -5,7 +5,6 @@
 #include "utf8.h"
 #include "diff.h"
 #include "revision.h"
-#include "notes.h"
 #include "gpg-interface.h"
 #include "mergesort.h"
 #include "commit-slab.h"
