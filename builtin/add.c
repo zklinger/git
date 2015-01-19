@@ -8,8 +8,6 @@
 #include "lockfile.h"
 #include "dir.h"
 #include "pathspec.h"
-#include "exec_cmd.h"
-#include "cache-tree.h"
 #include "run-command.h"
 #include "parse-options.h"
 #include "diff.h"
