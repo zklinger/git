@@ -2,7 +2,6 @@
 #include "tree-walk.h"
 #include "xdiff-interface.h"
 #include "blob.h"
-#include "exec_cmd.h"
 #include "merge-blobs.h"
 
 static const char merge_tree_usage[] = "git merge-tree <base-tree> <branch1> <branch2>";
