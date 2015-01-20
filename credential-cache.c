@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "credential.h"
 #include "string-list.h"
 #include "parse-options.h"
 #include "unix-socket.h"
