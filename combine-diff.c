@@ -1,6 +1,5 @@
 #include "cache.h"
 #include "commit.h"
-#include "blob.h"
 #include "diff.h"
 #include "diffcore.h"
 #include "quote.h"
