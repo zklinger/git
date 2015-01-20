@@ -5,7 +5,6 @@
 #include "commit.h"
 #include "diff.h"
 #include "revision.h"
-#include "list-objects.h"
 #include "run-command.h"
 #include "refs.h"
 #include "argv-array.h"
