@@ -20,6 +20,7 @@
  *
  */
 
+#include "builtin.h"
 #include "xinclude.h"
 
 
@@ -162,7 +163,7 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 	unsigned int hbits;
 	long nrec, hsize, bsize;
 	unsigned long hav;
-	char const *blk, *cur, *top, *prev;
+	char const *blk, *cur, *top, *prev, *data, *start, *end;
 	xrecord_t *crec;
 	xrecord_t **recs, **rrecs;
 	xrecord_t **rhash;
@@ -195,7 +196,17 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 	if ((cur = blk = xdl_mmfile_first(mf, &bsize)) != NULL) {
 		for (top = blk + bsize; cur < top; ) {
 			prev = cur;
-			hav = xdl_hash_record(&cur, top, xpp->flags);
+
+			if (xpp->flags & XDF_IGNORE_CASE_CHANGE) {
+				data = start = xstrdup_tolower(cur);
+				end = start + bsize;
+			} else {
+				data = start = cur;
+				end = top;
+			}
+			hav = xdl_hash_record(&data, end, xpp->flags);
+			cur += data -start;
+
 			if (nrec >= narec) {
 				narec *= 2;
 				if (!(rrecs = (xrecord_t **) xdl_realloc(recs, narec * sizeof(xrecord_t *))))

@@ -40,6 +40,7 @@ extern "C" {
 #define XDF_DIFF_ALG(x) ((x) & XDF_DIFF_ALGORITHM_MASK)
 
 #define XDF_IGNORE_BLANK_LINES (1 << 7)
+#define XDF_IGNORE_CASE_CHANGE (1 << 8)
 
 #define XDL_EMIT_FUNCNAMES (1 << 0)
 #define XDL_EMIT_COMMON (1 << 1)
