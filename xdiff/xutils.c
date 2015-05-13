@@ -160,13 +160,11 @@ int xdl_recmatch(const char *l1, long s1, const char *l2, long s2, long flags)
 {
 	int i1, i2;
 
-	if (flags & XDF_IGNORE_CASE_CHANGE) {
-		if (s1 == s2 && !strncasecmp(l1, l2, s1))
-			return 1;
-	} else {
-		if (s1 == s2 && !memcmp(l1, l2, s1))
-			return 1;
-	}
+	if (s1 == s2 && (flags & XDF_IGNORE_CASE_CHANGE) && !strncasecmp(l1, l2, s1))
+		return 1;
+
+	if (s1 == s2 && !(flags & XDF_IGNORE_CASE_CHANGE) && !memcmp(l1, l2, s1))
+		return 1;
 
 	if (!(flags & XDF_WHITESPACE_FLAGS))
 		return 0;
