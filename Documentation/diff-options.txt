@@ -472,6 +472,9 @@ endif::git-format-patch[]
 --ignore-blank-lines::
 	Ignore changes whose lines are all blank.
 
+--ignore-case::
+	Ignore case changes when comparing lines.
+
 --inter-hunk-context=<lines>::
 	Show the context between diff hunks, up to the specified number
 	of lines, thereby fusing hunks that are close to each other.
