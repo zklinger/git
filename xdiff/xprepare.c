@@ -163,7 +163,7 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 	unsigned int hbits;
 	long nrec, hsize, bsize;
 	unsigned long hav;
-	char const *blk, *cur, *top, *prev, *data, *start, *end;
+	char const *blk, *cur, *top, *prev, *lc, *data, *start, *end;
 	xrecord_t *crec;
 	xrecord_t **recs, **rrecs;
 	xrecord_t **rhash;
@@ -194,18 +194,22 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 
 	nrec = 0;
 	if ((cur = blk = xdl_mmfile_first(mf, &bsize)) != NULL) {
+		if (xpp->flags & XDF_IGNORE_CASE_CHANGE)
+			lc = xstrdup_tolower(cur);
+
 		for (top = blk + bsize; cur < top; ) {
 			prev = cur;
 
 			if (xpp->flags & XDF_IGNORE_CASE_CHANGE) {
-				data = start = xstrdup_tolower(cur);
+				data = start = lc;
 				end = start + bsize;
 			} else {
 				data = start = cur;
 				end = top;
 			}
 			hav = xdl_hash_record(&data, end, xpp->flags);
-			cur += data -start;
+			lc += data - start;
+			cur += data - start;
 
 			if (nrec >= narec) {
 				narec *= 2;
