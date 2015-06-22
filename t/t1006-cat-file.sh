@@ -569,8 +569,7 @@ test_expect_success 'cat-file --batch-all-objects shows all objects' '
 	) >>expect.unsorted &&
 	sort <expect.unsorted >expect &&
 	git -C all-two cat-file --batch-all-objects \
-				--batch-check="%(objectname)" >actual.unsorted &&
-	sort <actual.unsorted >actual &&
+				--batch-check="%(objectname)" >actual &&
 	test_cmp expect actual
 '
 
