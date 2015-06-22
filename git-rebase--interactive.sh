@@ -837,6 +837,52 @@ add_exec_commands () {
 	mv "$1.new" "$1"
 }
 
+# Check if the SHA-1 passed as an argument is a
+# correct one, if not then print $2 in "$todo".badsha
+# $1: the SHA-1 to test
+# $2: the line to display if incorrect SHA-1
+check_commit_sha () {
+	badsha=f
+	if test -z $1
+	then
+		badsha=t
+	else
+		sha1_verif="$(git rev-parse --verify --quiet $1^{commit})"
+		if test -z $sha1_verif
+		then
+			badsha=t
+		fi
+	fi
+
+	if test $badsha = t
+	then
+		printf '%s\n' "$2" >>"$todo".badsha
+	fi
+}
+
+# prints the bad commits and bad commands
+# from the todolist in stdin
+check_bad_cmd_and_sha () {
+	git stripspace --strip-comments |
+	while read -r line
+	do
+		read -r command sha1 rest <<EOF
+$line
+EOF
+		case $command in
+		''|noop|x|"exec")
+			# Doesn't expect a SHA-1
+			;;
+		pick|p|drop|d|reword|r|edit|e|squash|s|fixup|f)
+			check_commit_sha $sha1 "$line"
+			;;
+		*)
+			printf '%s\n' "$line" >>"$todo".badcmd
+			;;
+		esac
+	done
+}
+
 # Print the list of the SHA-1 of the commits
 # from stdin to stdout
 todo_list_to_sha_list () {
@@ -871,6 +917,8 @@ checkout_onto () {
 
 # Check if the user dropped some commits by mistake
 # Behaviour determined by rebase.missingCommitsCheck.
+# Check if there is an unrecognized command or a
+# bad SHA-1 in a command.
 check_todo_list () {
 	raise_error=f
 
@@ -921,6 +969,28 @@ check_todo_list () {
 			"rebase.missingCommitsCheck. Ignoring."
 		;;
 	esac
+
+	check_bad_cmd_and_sha <"$todo"
+
+	if test -s "$todo".badsha
+	then
+		raise_error=t
+
+		warn "Warning: the SHA-1 is missing or isn't" \
+			"a commit in the following line(s):"
+		warn_lines <"$todo".badsha
+		warn
+	fi
+
+	if test -s "$todo".badcmd
+	then
+		raise_error=t
+
+		warn "Warning: the command isn't recognized" \
+			"in the following line(s):"
+		warn_lines <"$todo".badcmd
+		warn
+	fi
 
 	if test $raise_error = t
 	then
