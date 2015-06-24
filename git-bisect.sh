@@ -1,6 +1,6 @@
 #!/bin/sh
 
-USAGE='[help|start|bad|good|new|old|skip|next|reset|visualize|replay|log|run]'
+USAGE='[help|start|bad|good|new|old|terms|skip|next|reset|visualize|replay|log|run]'
 LONG_USAGE='git bisect help
 	print this long help message.
 git bisect start [--no-checkout] [<bad> [<good>...]] [--] [<pathspec>...]
@@ -11,6 +11,8 @@ git bisect (bad|new) [<rev>]
 git bisect (good|old) [<rev>...]
 	mark <rev>... known-good revisions/
 		revisions before change in a given property.
+git bisect terms term1 term2
+	set up term1 and term2 as bisection terms.
 git bisect skip [(<rev>|<range>)...]
 	mark <rev>... untestable revisions.
 git bisect next
@@ -82,6 +84,14 @@ bisect_start() {
 	# revision_seen is true if a git bisect start
 	# has revision as arguments
 	revision_seen=0
+	# terms_defined is used to detect if the user
+	# defined his own terms with git bisect terms
+	terms_defined=0
+	if test -s "$GIT_DIR/TERMS_DEFINED"
+	then
+		terms_defined=1
+		get_terms
+	fi
 	if test "z$(git rev-parse --is-bare-repository)" != zfalse
 	then
 		mode=--no-checkout
@@ -180,10 +190,14 @@ bisect_start() {
 	} &&
 	git rev-parse --sq-quote "$@" >"$GIT_DIR/BISECT_NAMES" &&
 	eval "$eval true" &&
-	if test $revision_seen -eq 1 && test ! -s "$GIT_DIR/BISECT_TERMS"
+	if test $revision_seen -eq 1 && test ! -s "$GIT_DIR/BISECT_TERMS" || test $terms_defined -eq 1
 	then
 		echo "$NAME_BAD" >"$GIT_DIR/BISECT_TERMS" &&
-		echo "$NAME_GOOD" >>"$GIT_DIR/BISECT_TERMS"
+		echo "$NAME_GOOD" >>"$GIT_DIR/BISECT_TERMS" &&
+		if test $terms_defined -eq 1
+		then
+			echo "git bisect terms $NAME_BAD $NAME_GOOD" >>"$GIT_DIR/BISECT_LOG" || exit
+		fi
 	fi &&
 	echo "git bisect start$orig_args" >>"$GIT_DIR/BISECT_LOG" || exit
 	#
@@ -419,6 +433,7 @@ bisect_clean_state() {
 	rm -f "$GIT_DIR/BISECT_NAMES" &&
 	rm -f "$GIT_DIR/BISECT_RUN" &&
 	rm -f "$GIT_DIR/BISECT_TERMS" &&
+	rm -f "$GIT_DIR/TERMS_DEFINED" &&
 	# Cleanup head-name if it got left by an old version of git-bisect
 	rm -f "$GIT_DIR/head-name" &&
 	git update-ref -d --no-deref BISECT_HEAD &&
@@ -447,6 +462,8 @@ bisect_replay () {
 			eval "$cmd" ;;
 		"$NAME_GOOD"|"$NAME_BAD"|skip)
 			bisect_write "$command" "$rev" ;;
+		terms)
+			bisect_terms $rev ;;
 		*)
 			die "$(gettext "?? what are you talking about?")" ;;
 		esac
@@ -531,7 +548,8 @@ get_terms () {
 check_and_set_terms () {
 	cmd="$1"
 	case "$cmd" in
-	bad|good|new|old)
+	skip|start|terms) ;;
+	*)
 		if test -s "$GIT_DIR/BISECT_TERMS" && test "$cmd" != "$NAME_BAD" && test "$cmd" != "$NAME_GOOD"
 		then
 			die "$(eval_gettext "Invalid command: you're currently in a \$NAME_BAD/\$NAME_GOOD bisect.")"
@@ -564,6 +582,44 @@ bisect_voc () {
 	esac
 }
 
+bisect_terms () {
+	case "$#" in
+	0)
+		if test -s "$GIT_DIR/BISECT_TERMS"
+		then
+			{
+			read term1
+			read term2
+			}<"$GIT_DIR/BISECT_TERMS"
+			gettextln "Your current terms are $term1 and $term2."
+		else
+			die "$(gettext "No terms defined.")"
+		fi ;;
+	2)
+		check_term_format refs/bisect/"$1"
+		check_term_format refs/bisect/"$2"
+		if ! test -s "$GIT_DIR/BISECT_START"
+		then
+			echo $1 >"$GIT_DIR/BISECT_TERMS" &&
+			echo $2 >>"$GIT_DIR/BISECT_TERMS" &&
+			echo "1" >"$GIT_DIR/TERMS_DEFINED"
+			echo "git bisect terms $NAME_BAD $NAME_GOOD" >>"$GIT_DIR/BISECT_LOG" || exit
+		else
+			die "$(gettext "A bisection has already started, and you can't change terms in the middle of it.
+Use 'git bisect terms' to see the current terms.
+Otherwise, to start a new bisection with new terms, please use 'git bisect reset' and set the terms before the start")"
+		fi ;;
+	*)
+		usage ;;
+	esac
+}
+
+check_term_format () {
+	arg="$1"
+	git check-ref-format $arg ||
+	die "$(eval_gettext "'\$arg' is not a valid term")"
+}
+
 case "$#" in
 0)
 	usage ;;
@@ -576,7 +632,7 @@ case "$#" in
 		git bisect -h ;;
 	start)
 		bisect_start "$@" ;;
-	bad|good|new|old)
+	bad|good|new|old|"$NAME_BAD"|"$NAME_GOOD")
 		bisect_state "$cmd" "$@" ;;
 	skip)
 		bisect_skip "$@" ;;
@@ -593,6 +649,8 @@ case "$#" in
 		bisect_log ;;
 	run)
 		bisect_run "$@" ;;
+	terms)
+		bisect_terms "$@" ;;
 	*)
 		usage ;;
 	esac
