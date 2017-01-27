@@ -351,6 +351,7 @@ __git_refs ()
 			for i in HEAD FETCH_HEAD ORIG_HEAD MERGE_HEAD; do
 				if [ -e "$dir/$i" ]; then echo $pfx$i; fi
 			done
+			if [ -e "$dir/logs/commits" ]; then cat "$dir/logs/commits" ; fi
 			format="refname:short"
 			refs="refs/tags refs/heads refs/remotes"
 			;;

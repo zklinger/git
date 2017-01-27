@@ -51,6 +51,10 @@ struct rev_cmdline_info {
 #define REVISION_WALK_WALK 0
 #define REVISION_WALK_NO_WALK_SORTED 1
 #define REVISION_WALK_NO_WALK_UNSORTED 2
+struct completion_config {
+	int write_hash;
+	FILE *file;
+};
 
 struct rev_info {
 	/* Starting list */
@@ -213,6 +217,8 @@ struct rev_info {
 
 	struct commit_list *previous_parents;
 	const char *break_bar;
+
+	struct completion_config autocomplete;
 };
 
 extern int ref_excluded(struct string_list *, const char *path);

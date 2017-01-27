@@ -126,6 +126,7 @@ static void cmd_log_init_defaults(struct rev_info *rev)
 	if (default_date_mode)
 		parse_date_format(default_date_mode, &rev->date_mode);
 	rev->diffopt.touched_flags = 0;
+	rev->autocomplete.write_hash = 1;
 }
 
 static void cmd_log_init_finish(int argc, const char **argv, const char *prefix,
@@ -341,6 +342,13 @@ static int cmd_log_walk(struct rev_info *rev)
 	int saved_nrl = 0;
 	int saved_dcctc = 0, close_file = rev->diffopt.close_file;
 
+	if (rev->autocomplete.write_hash) {
+		printf("Autocomplete save is needed\n");
+		char *filename = git_pathdup("logs/commits");
+		if ((rev->autocomplete.file = fopen(filename, "w")) == NULL)
+			return error(_("Cannot open autocomplete helper file %s"), filename);
+	}
+
 	if (rev->early_output)
 		setup_early_output(rev);
 
@@ -383,6 +391,10 @@ static int cmd_log_walk(struct rev_info *rev)
 	    DIFF_OPT_TST(&rev->diffopt, CHECK_FAILED)) {
 		return 02;
 	}
+
+	if (rev->autocomplete.write_hash)
+		fclose(rev->autocomplete.file);
+
 	return diff_result_code(&rev->diffopt, 0);
 }
 
