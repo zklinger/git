@@ -34,6 +34,7 @@ static int default_abbrev_commit;
 static int default_show_root = 1;
 static int default_follow;
 static int default_show_signature;
+static int default_log_shown_commits;
 static int decoration_style;
 static int decoration_given;
 static int use_mailmap_config;
@@ -126,7 +127,7 @@ static void cmd_log_init_defaults(struct rev_info *rev)
 	if (default_date_mode)
 		parse_date_format(default_date_mode, &rev->date_mode);
 	rev->diffopt.touched_flags = 0;
-	rev->autocomplete.write_hash = 1;
+	rev->commit_logger.enabled = default_log_shown_commits;
 }
 
 static void cmd_log_init_finish(int argc, const char **argv, const char *prefix,
@@ -342,11 +343,11 @@ static int cmd_log_walk(struct rev_info *rev)
 	int saved_nrl = 0;
 	int saved_dcctc = 0, close_file = rev->diffopt.close_file;
 
-	if (rev->autocomplete.write_hash) {
+	if (rev->commit_logger.enabled) {
 		printf("Autocomplete save is needed\n");
 		char *filename = git_pathdup("logs/commits");
-		if ((rev->autocomplete.file = fopen(filename, "w")) == NULL)
-			return error(_("Cannot open autocomplete helper file %s"), filename);
+		if ((rev->commit_logger.file = fopen(filename, "w")) == NULL)
+			return error(_("Cannot open shown commits log file %s"), filename);
 	}
 
 	if (rev->early_output)
@@ -392,8 +393,8 @@ static int cmd_log_walk(struct rev_info *rev)
 		return 02;
 	}
 
-	if (rev->autocomplete.write_hash)
-		fclose(rev->autocomplete.file);
+	if (rev->commit_logger.enabled)
+		fclose(rev->commit_logger.file);
 
 	return diff_result_code(&rev->diffopt, 0);
 }
@@ -434,6 +435,10 @@ static int git_log_config(const char *var, const char *value, void *cb)
 	}
 	if (!strcmp(var, "log.showsignature")) {
 		default_show_signature = git_config_bool(var, value);
+		return 0;
+	}
+	if (!strcmp(var, "log.logshowncommits")) {
+		default_log_shown_commits = git_config_bool(var, value);
 		return 0;
 	}
 

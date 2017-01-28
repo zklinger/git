@@ -536,17 +536,17 @@ static void show_mergetag(struct rev_info *opt, struct commit *commit)
 	for_each_mergetag(show_one_mergetag, commit, opt);
 }
 
-static void write_commit_hash(struct commit *commit, struct rev_info *opt) {
-	if (opt->autocomplete.file != NULL) {
-		fprintf(opt->autocomplete.file, "%s\n", find_unique_abbrev(commit->object.oid.hash, -1));
+static void log_shown_commit(struct commit *commit, struct rev_info *opt) {
+	if (opt->commit_logger.file != NULL) {
+		fprintf(opt->commit_logger.file, "%s\n", find_unique_abbrev(commit->object.oid.hash, -1));
 		if (commit->parents && commit->parents->next) {
 			struct commit_list *p;
 			for (p = commit->parents; p ; p = p->next) {
 				struct commit *parent = p->item;
-				fprintf(opt->autocomplete.file, "%s\n", find_unique_abbrev(parent->object.oid.hash, -1));
+				fprintf(opt->commit_logger.file, "%s\n", find_unique_abbrev(parent->object.oid.hash, -1));
 			}
 		}
-		fflush(opt->autocomplete.file);
+		fflush(opt->commit_logger.file);
 	}
 }
 
@@ -559,8 +559,8 @@ void show_log(struct rev_info *opt)
 	const char *extra_headers = opt->extra_headers;
 	struct pretty_print_context ctx = {0};
 
-	if (opt->autocomplete.write_hash)
-		write_commit_hash(commit, opt);
+	if (opt->commit_logger.enabled)
+		log_shown_commit(commit, opt);
 
 	opt->loginfo = NULL;
 	if (!opt->verbose_header) {
