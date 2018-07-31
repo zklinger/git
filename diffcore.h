@@ -118,8 +118,18 @@ struct obj_order {
 	void *obj;	/* setup by caller */
 
 	/* setup/used by order_objects() */
-	int orig_order;
-	int order;
+	int group;
+	int ranking;
+};
+
+struct order_pattern {
+	char *pattern;
+	int match_count;
+};
+
+struct order_group {
+	struct order_pattern **patterns;
+	int pattern_count;
 };
 
 typedef const char *(*obj_path_fn_t)(void *obj);
